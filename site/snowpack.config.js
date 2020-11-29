@@ -1,5 +1,6 @@
 /** @type {import("snowpack").SnowpackUserConfig } */
 module.exports = {
+  extends: "@snowpack/app-scripts-svelte",
   mount: {
     public: "/",
     src: "/_dist_",
@@ -13,6 +14,7 @@ module.exports = {
     /* ... */
   ],
   installOptions: {
+    installTypes: true,
     /* ... */
   },
   devOptions: {

@@ -14,3 +14,13 @@ if (import.meta.hot) {
     app.$destroy();
   });
 }
+
+// Type override for HMR so TS doesn't complain
+declare global {
+  interface ImportMeta {
+    hot: {
+      accept: Function;
+      dispose: Function;
+    };
+  }
+}
