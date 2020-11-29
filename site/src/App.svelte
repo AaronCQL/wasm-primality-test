@@ -7,27 +7,30 @@
     await init();
   });
 
-  let input: string = "121";
-  let answer: string = "hello";
+  let input: string;
+  let isPrime: boolean = false;
+  let divisor: string = "0";
 
-  const onClick = async () => {
+  const onClick = () => {
     if (!input) {
       return;
     }
-    answer = is_definite_prime(BigInt(input)) + "";
+    const result = is_definite_prime(BigInt(input));
+    isPrime = result[0];
+    divisor = result[1].toString();
   };
 </script>
 
 <div
   class="flex flex-col justify-center items-center min-h-screen p-10 text-xl">
   <textarea
-    class="border border-gray-500 rounded-md p-2 font-mono focus:outline-none focus:border-blue-500"
+    class="border border-gray-500 rounded-md p-2 font-mono focus:outline-none focus:border-blue-500 w-screen max-w-md"
     type="textarea"
     bind:value={input} />
   <button
-    class="p-1 mt-2 bg-blue-600 text-white rounded-md font-semibold focus:outline-none"
+    class="px-2 mt-2 bg-blue-600 text-white rounded-md font-semibold focus:outline-none"
     on:click={onClick}>
-    CHECK
+    Check
   </button>
-  <div class="">{answer}</div>
+  <div class="">{isPrime} {isPrime ? '' : divisor.toString()}</div>
 </div>

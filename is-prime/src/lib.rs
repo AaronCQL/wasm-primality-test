@@ -9,21 +9,29 @@ use wasm_bindgen::prelude::*;
 static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
 
 #[wasm_bindgen]
-pub fn is_definite_prime(n: u64) -> bool {
+pub struct Result(pub bool, pub u64);
+
+#[wasm_bindgen]
+pub fn is_definite_prime(n: u64) -> Result {
     if n <= 3 {
-        return n > 1;
+        return Result(n > 1, 0);
     }
-    if n % 2 == 0 || n % 3 == 0 {
-        return false;
+    if n % 2 == 0 {
+        return Result(false, 2);
+    }
+    if n % 3 == 0 {
+        return Result(false, 3);
     }
 
-    let upper_limit = (n as f64).sqrt() as u64;
     let mut i: u64 = 5;
-    while i.pow(2) <= upper_limit {
-        if n % i == 0 || n % (i + 2) == 0 {
-            return false;
+    while i.pow(2) <= n {
+        if n % i == 0 {
+            return Result(false, i);
+        }
+        if n % (i + 2) == 0 {
+            return Result(false, i + 2);
         }
         i += 6;
     }
-    true
+    Result(true, 0)
 }
