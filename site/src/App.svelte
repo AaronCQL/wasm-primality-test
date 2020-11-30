@@ -13,6 +13,7 @@
   let timeTaken: number = 0;
 
   const onClick = () => {
+    resultDisplay = "";
     const numbersRegex = /^[0-9]+$/;
     const parsedInput = input.replaceAll(",", "");
 
@@ -29,7 +30,7 @@
     const t1 = new Date().valueOf();
     const result = is_definite_prime(bigintInput);
     const t2 = new Date().valueOf();
-    timeTaken = t2 - t1;
+    timeTaken = (t2 - t1) / 1000;
     resultDisplay = result[0]
       ? "✅ prime"
       : "❌ not prime " +
@@ -56,7 +57,6 @@
   <div class="overflow-auto my-2">{resultDisplay}</div>
   <div class="absolute bottom-0 right-0 m-3 text-base text-gray-400">
     Time taken:
-    {timeTaken.toLocaleString()}
-    ms
+    {timeTaken.toFixed(2)}s
   </div>
 </main>
