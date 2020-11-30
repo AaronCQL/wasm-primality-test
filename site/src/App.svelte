@@ -1,13 +1,13 @@
 <script lang="typescript">
   import "./Tailwind.svelte";
   import { onMount } from "svelte";
-  import init, { is_definite_prime } from "./wasm/is_prime";
+  import init, { is_definite_prime, is_probably_prime } from "./wasm/is_prime";
 
   onMount(async () => {
     await init();
   });
 
-  const MAX_64_BIT_UINT_VALUE = BigInt("18446744073709551615");
+  const TRIAL_DIVISION_THRESHOLD = BigInt(2 ** 60);
   let input: string;
   let resultDisplay: string = "Type a number to check";
   let timeTaken: number = 0;
@@ -23,26 +23,34 @@
     }
 
     const bigintInput = BigInt(parsedInput);
-    if (bigintInput > MAX_64_BIT_UINT_VALUE) {
-      alert("Max number reached");
-      return;
+    if (bigintInput < TRIAL_DIVISION_THRESHOLD) {
+      const t1 = new Date().valueOf();
+      const result = is_definite_prime(bigintInput);
+      const t2 = new Date().valueOf();
+      timeTaken = (t2 - t1) / 1000;
+      resultDisplay = result[0]
+        ? "✅ prime"
+        : "❌ not prime " +
+          (bigintInput <= BigInt(1)
+            ? "(by definition)"
+            : `(divisible by ${result[1].toLocaleString()})`);
+    } else {
+      const t1 = new Date().valueOf();
+      console.log(parsedInput);
+      const isProbablyPrime: boolean = is_probably_prime(parsedInput, 30);
+      const t2 = new Date().valueOf();
+      timeTaken = (t2 - t1) / 1000;
+      resultDisplay = isProbablyPrime ? "✅ probably prime" : "❌ not prime";
     }
-    const t1 = new Date().valueOf();
-    const result = is_definite_prime(bigintInput);
-    const t2 = new Date().valueOf();
-    timeTaken = (t2 - t1) / 1000;
-    resultDisplay = result[0]
-      ? "✅ prime"
-      : "❌ not prime " +
-        (bigintInput <= BigInt(1)
-          ? "(by definition)"
-          : `(divisible by ${result[1].toLocaleString()})`);
   };
 </script>
 
 <main
   class="flex flex-col justify-center items-center min-h-screen py-10 px-3 text-xl text-gray-100 bg-gray-900">
-  <h1 class="text-2xl text-purple-400 uppercase tracking-widest font-semibold">
+  <h1
+    class="text-2xl text-center text-purple-400 uppercase tracking-widest font-semibold">
+    Arbitrary Precision
+    <br />
     Primality Test
   </h1>
   <textarea
@@ -55,7 +63,7 @@
     Check
   </button>
   <div class="overflow-auto my-2">{resultDisplay}</div>
-  <div class="absolute bottom-0 right-0 m-3 text-base text-gray-400">
+  <div class="fixed bottom-0 right-0 m-3 text-base text-gray-400">
     Time taken:
     {timeTaken.toFixed(2)}s
   </div>
