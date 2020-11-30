@@ -2,3 +2,7 @@
 build
 web_modules
 node_modules
+
+/src/wasm/.gitignore
+/src/wasm/package.json
+/src/wasm/README.md
