@@ -22,6 +22,12 @@ This will compile, build, and output the WASM files directly within `/site/src`,
 - The target `web` is used as Rollup does not natively support bundling WASM files yet
 - The `--no-typescript` is a workaround since building the website using `yarn build` with the TypeScript files will result in type errors
 
+To build in debug mode and to log Rust panics into the browser console:
+
+```sh
+wasm-pack build --out-dir ../site/src/wasm --target web --debug
+```
+
 ## Developing the website
 
 Source is written with TypeScript and Svelte, and uses Snowpack as its development tool.

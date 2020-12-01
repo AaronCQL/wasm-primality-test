@@ -1,7 +1,11 @@
 <script lang="typescript">
   import "./Tailwind.svelte";
   import { onMount } from "svelte";
-  import init, { is_definite_prime, is_probably_prime } from "./wasm/is_prime";
+  import init, {
+    is_definite_prime,
+    is_probably_prime,
+    PrimeResult,
+  } from "./wasm/is_prime";
 
   onMount(async () => {
     await init();
@@ -13,7 +17,6 @@
   let timeTaken: number = 0;
 
   const onClick = () => {
-    resultDisplay = "";
     const numbersRegex = /^[0-9]+$/;
     const parsedInput = input.replaceAll(",", "");
 
@@ -25,7 +28,7 @@
     const bigintInput = BigInt(parsedInput);
     if (bigintInput < TRIAL_DIVISION_THRESHOLD) {
       const t1 = new Date().valueOf();
-      const result = is_definite_prime(bigintInput);
+      const result: PrimeResult = is_definite_prime(bigintInput);
       const t2 = new Date().valueOf();
       timeTaken = (t2 - t1) / 1000;
       resultDisplay = result[0]
@@ -37,7 +40,10 @@
     } else {
       const t1 = new Date().valueOf();
       console.log(parsedInput);
-      const isProbablyPrime: boolean = is_probably_prime(parsedInput, 30);
+      const isProbablyPrime: boolean = is_probably_prime(
+        parsedInput,
+        30 /* number of miller-rabin witness test rounds */
+      );
       const t2 = new Date().valueOf();
       timeTaken = (t2 - t1) / 1000;
       resultDisplay = isProbablyPrime ? "✅ probably prime" : "❌ not prime";
